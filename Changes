@@ -1,14 +1,16 @@
 Revision history for Perl module URI::ParseSearchString::More
 
-0.11 2009-07-09
+0.11 2009-07-10
     - Wrapped $mech->get in an eval in order to get by the following cryptic
       error message:
       Can't store CODE items at ../../lib/Storable.pm
       (autosplit into ../../lib/auto/Storable/_freeze.al) line 290,
       at /usr/local/share/perl/5.8.7/WWW/Mechanize/Cached.pm line 118
+	  I believe this error occurs when WWW::Mechanize::Cached deals with
+	  pages that return 403 response codes
     - have disabled AOL tests in t/005_parse_more.t because AOL is currently
-      blocking me and URI::ParseSearchString doesn't return the correct
-      data
+      blocking me and returning 403 responses.  URI::ParseSearchString doesn't
+	  do any mechanized searchs, so it cannot deal with AOL's encoded URLs
 
 0.10 2008-11-20
     - Added search.incredimail.com to engines
@@ -23,7 +25,7 @@ Revision history for Perl module URI::ParseSearchString::More
     - Moved googlesyndication.com tests as they were causing
       failing test reports.  Some of these tests are tricky
       as we can't reliably predict that these URLs will
-      always be available. They are now in t/006_extended.t 
+      always be available. They are now in t/006_extended.t
       and must be explicitly enabled.
 
 0.08 2008-10-29
@@ -57,18 +59,15 @@ Revision history for Perl module URI::ParseSearchString::More
     - Added guess() method
     - Added blame() method to confirm which module has returned the last
       results of se_term() or parse_search_string()
-      
+
 0.03 2007-07-27
     - Added Test::Pod::Coverage, Test::Pod and File::Spec to prerequisites
-    
+
 0.02 2007-07-25
     - Added support for the following engines:
         http://as.starware.com/dp/search
         http://as.weatherstudio.com/dp/search
     - Using URI::Heuristic to fix malformed or incomplete URLs
-    
+
 0.01 Sat Jul 21 16:14:45 2007
     - original version; created by ExtUtils::ModuleMaker 0.49
-
-
-

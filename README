@@ -1,11 +1,8 @@
-pod2text URI::ParseSearchString::More.pm > README
+To install this module:
 
-If this is still here it means the programmer was too lazy to create the readme file.
+cpan URI::ParseSearchString::More
 
-You can create it now by using the command shown above from this directory.
-
-At the very least you should be able to use this set of instructions
-to install the module...
+OR
 
 perl Makefile.PL
 make
