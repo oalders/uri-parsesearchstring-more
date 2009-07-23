@@ -1,5 +1,6 @@
 Revision history for Perl module URI::ParseSearchString::More
 
+<<<<<<< HEAD:Changes
 0.12 2009-07-22
     - Now requires version 1.33 of WWW::Mechanize::Cached as this release
 	  fixes the CODE items error
@@ -10,14 +11,19 @@ Revision history for Perl module URI::ParseSearchString::More
 	- Removed images.google.* from TODO list as this was already being parsed
 
 0.11 2009-07-09
+=======
+0.11 2009-07-10
+>>>>>>> 591c60f247d8727b9101f2fe3a635082993c63f4:Changes
     - Wrapped $mech->get in an eval in order to get by the following cryptic
       error message:
       Can't store CODE items at ../../lib/Storable.pm
       (autosplit into ../../lib/auto/Storable/_freeze.al) line 290,
       at /usr/local/share/perl/5.8.7/WWW/Mechanize/Cached.pm line 118
+	  I believe this error occurs when WWW::Mechanize::Cached deals with
+	  pages that return 403 response codes
     - have disabled AOL tests in t/005_parse_more.t because AOL is currently
-      blocking me and URI::ParseSearchString doesn't return the correct
-      data
+      blocking me and returning 403 responses.  URI::ParseSearchString doesn't
+	  do any mechanized searchs, so it cannot deal with AOL's encoded URLs
 
 0.10 2008-11-20
     - Added search.incredimail.com to engines

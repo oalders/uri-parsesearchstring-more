@@ -437,6 +437,8 @@ L<WWW::Mechanize::Cached> can be used to cache your lookups. There is additional
 parsing and also a guess() method which will return good results in many cases
 of doubt.
 
+Repository: L<http://github.com/oalders/uri-parsesearchstring-more/tree/master>
+
 
 =head1 USAGE
 
