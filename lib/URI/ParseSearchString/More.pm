@@ -5,10 +5,10 @@ use strict;
 
 use base qw( URI::ParseSearchString );
 
-our $VERSION = '0.10';
+our $VERSION = '0.12';
 
 use CGI;
-use Data::Dumper;
+use Data::Dump qw( dump );
 use List::Compare;
 use Params::Validate qw( validate SCALAR );
 use URI::Heuristic qw(uf_uristr);
@@ -20,14 +20,18 @@ my %search_regex = (
     dogpile => qr{(.*) - Dogpile Web Search},
 );
 
-my %url_regex = ( 
-    aol => qr{aol.com/(?:aol|aolcom)/search\?encquery=}, 
+my %url_regex = (
+    aol => qr{aol.com/(?:aol|aolcom)/search\?encquery=},
     as  => qr{as.\w+.com/dp/search\?x=},
     dogpile => qr{http://www.dogpile},
 );
 
 # local.yahoo.com should come before Yahoo as it has different
 # params
+# ie. this list is for ordering some of the engines in the regex.  if an
+# engine has no reason to be at a certain point in the list, it should
+# just be listed in the %query_lookup table
+
 my @engines = (
     'local.google',
     'maps.google',
@@ -42,11 +46,12 @@ my @engines = (
     'sucheaol.aol.de',
     'aol',
     'ask.*',
+    'fastbrowsersearch.com',
     'as.*.com',
     'att.net',
     'trustedsearch.com',
 );
-    
+
 my %query_lookup = (
 
     'abcsok.no'                     => ['q'],
@@ -58,6 +63,7 @@ my %query_lookup = (
     'ask.*'                         => ['q'],
     'att.net'                       => ['qry', 'q'],
     'baidu.com'                     => ['bs'],
+    'bing.com'                      => ['q'],
     'blingo.com'                    => ['q'],
     'citysearch.com'                => ['query'],
     'clicknow.org.uk'               => ['q'],
@@ -71,7 +77,8 @@ my %query_lookup = (
     'errors.aol.com'                => ['host'],
     'excite'                        => ['search'],
     'ez4search.com'                 => ['searchname'],
-    'fedstats.com'                  => ['s'],    
+    'fastbrowsersearch.com'         => ['q'],
+    'fedstats.com'                  => ['s'],
     'find.copernic.com'             => ['query'],
     'finna.is'                      => ['query'],
     'googlesyndication'             => ['q','ref', 'loc'],
@@ -86,7 +93,7 @@ my %query_lookup = (
     'maps.google'                   => ['q', 'near'],
     'msntv.msn.com'                 => ['q'],
     'munky.com'                     => ['term'],
-    'mysearch.com'                  => ['searchfor'],     
+    'mysearch.com'                  => ['searchfor'],
     'mywebsearch.com'               => ['searchfor'],
     'mytelus.com'                   => ['q'],
     'netscape.com'                  => ['query'],
@@ -155,34 +162,34 @@ sub parse_search_string {
 
     my $self = shift;
     my $url = shift;
-        
+
     foreach my $engine ( keys %url_regex ) {
-        
+
         if ( $url =~ $url_regex{$engine} ) {
-            
+
             # fix funky URLs
             $url = uf_uristr($url);
-                        
+
             my $mech = $self->get_mech();
             eval {
                 $mech->get( $url );
             };
-            
+
             if ( $@ ) {
                 warn "Issue with url: $url";
                 warn $@;
             }
-            
+
             if ( $mech->status && $mech->status == 403 ) {
                 warn "403 returned for $url  Are you being blocked?";
             }
-    
+
             if ( $mech->title() ) {
                 my $search_term = $self->_apply_regex(
                     string  => $mech->title(),
                     regex   => $engine,
                 );
-            
+
                 if ( $search_term ) {
                     $self->{'more'}->{'blame'} = __PACKAGE__;
                     return $search_term;
@@ -192,7 +199,7 @@ sub parse_search_string {
     }
 
     my $terms = $self->parse_more( $url );
-    
+
     if ( $terms ) {
         $self->{'more'}->{'blame'} = __PACKAGE__;
         return $terms;
@@ -205,174 +212,176 @@ sub parse_search_string {
 }
 
 sub se_term {
-    
+
     my $self = shift;
     return $self->parse_search_string( @_ );
-    
+
 }
 
 sub parse_more {
-    
+
     my $self    = shift;
     my $url     = shift;
-    
+
     die "you need to supply at least one argument" unless $url;
-    
+
     $self->{'more'} = undef;
     $self->{'more'}->{'string'} = $url;
-    
+
     my $regex = join " | ", $self->_get_engines;
     $self->{'more'}->{'regex'}  = $regex;
     $self->{'more'}->{'url'}    = $url;
 
     if ( $url =~ m{ ( (?: $regex ) .* ?/ ) .* ?\? (.*)\z }xms ) {
-        
+
         my $domain       = $1;
         my $query_string = $2;
-        
+
         # for some reason, escaped quoted strings were messed up under mod_perl
-        $query_string   =~ s{&quot;}{"}gxms;        
+        $query_string   =~ s{&quot;}{"}gxms;
         $query_string   =~ s{&\#39;}{'}gxms;
 
         my $cgi         = new CGI( $query_string );
-        
+
         # remove trailing slash
         $domain =~ s{/\z}{};
-    
+
         my @param_parts = ( );
         my %params      = ( );
-        
+        my @engines     = $self->_get_engines;
+
         ENGINE:
-        foreach my $engine ( $self->_get_engines ) {
+        foreach my $engine ( @engines ) {
+
             if ( $domain =~ /$engine/i ) {
-                
+
                 my @names = @{ $query_lookup{$engine} };
-                
+
                 $self->{'more'}->{'domain'} = $domain;
                 $self->{'more'}->{'names'}  = \@names;
-                
+
                 foreach my $name ( @names ) {
                     push @param_parts, $cgi->param( $name );
                     $params{$name} = $cgi->param( $name );
                 }
-                
+
                 last ENGINE;
             }
         }
-    
+
         my $params = join ( " ", @param_parts );
         my $orig_domain = $domain;
         $domain =~ s/\/.*//g;
         unless ( $domain =~ /\w/ ) {
             $domain = $orig_domain;
         }
-        
+
         $self->{'more'}->{'terms'} = \@param_parts;
         $self->{'more'}->{'params'} = \%params;
-        
+
         return $params;
     }
-    
+
     return;
-    
+
 }
 
 sub blame {
-    
+
     my $self = shift;
     return $self->{more}->{blame};
-    
+
 }
 
 sub guess {
-    
+
     my $self    = shift;
     my $url     = shift || $self->{'more'}->{'string'};
-    
+
     my @guesses = ( 'q', 'query', 'searchfor' );
-     
+
     if ( $url =~ m{ ( .* ?/ ) .* ?\? (.*)\z }xms ) {
-        
+
         my $domain       = $1;
         my $query_string = $2;
         my $cgi = new CGI( $query_string );
-        
+
         foreach my $guess ( @guesses ) {
             if ( $cgi->param( $guess) ) {
                 return $cgi->param($guess);
             }
         }
     }
-    
+
     return;
 }
 
 sub set_cached {
-    
+
     my $self    = shift;
     my $switch  = shift;
-    
+
     if ( $switch ) {
         $self->{'__more_cached'} = 1;
     }
     else {
         $self->{'__more_cached'} = 0;
     }
-    
+
     return $self->{'__more_cached'};
-    
+
 }
 
 sub get_cached {
-    
+
     my $self    = shift;
-    
+
     return $self->{'__more_cached'};
-    
+
 }
 
 sub get_mech {
- 
+
     my $self    = shift;
     my $cache   = $self->get_cached;
-    
+
     if ( $cache ) {
-        
+
         if ( !exists $self->{'__more_mech_cached'} ) {
-       
+
             my $mech = WWW::Mechanize::Cached->new();
             $mech->agent("URI::ParseSearchString::More $VERSION");
             $self->{'__more_mech_cached'} = $mech;
-                   
-        }        
-        
+
+        }
+
         return $self->{'__more_mech_cached'};
-        
+
     }
-        
-    # return a non-caching object    
+
+    # return a non-caching object
     if ( !exists $self->{'__more_mech'} ) {
-   
+
         my $mech = WWW::Mechanize->new();
         $mech->agent("URI::ParseSearchString::More $VERSION");
         $self->{'__more_mech'} = $mech;
-   
+
     }
-    
+
     return $self->{'__more_mech'};
-    
+
 }
 
 sub _apply_regex {
 
     my $self    = shift;
-    my %rules   = ( 
+    my %rules   = (
         string => { type => SCALAR },
         regex  => { type => SCALAR },
     );
-    
+
     my %args = validate( @_, \%rules );
-     
+
     if ( $args{'string'} =~ $search_regex{$args{'regex'}} ) {
         return $1;
     }
@@ -381,15 +390,15 @@ sub _apply_regex {
 }
 
 sub _get_engines {
-    
+
     my $lc = List::Compare->new(\@engines, [ keys %query_lookup ]);
     my @remaining_engines = $lc->get_complement;
-    
+
     my   @all_engines = @engines;
     push @all_engines, @remaining_engines;
-    
+
     return @all_engines;
-    
+
 }
 
 
@@ -402,7 +411,7 @@ URI::ParseSearchString::More - Extract search strings from more referrers.
 
 =head1 VERSION
 
-Version 0.10
+Version 0.12
 
 =head1 SYNOPSIS
 
@@ -414,13 +423,13 @@ Version 0.10
 =head1 DESCRIPTION
 
 This module is a subclass of L<URI::ParseSearchString>, so you can call any
-methods on this object that you would call on a URI::ParseSearchString object. 
-This module works a little harder than its SuperClass to get you results. If 
+methods on this object that you would call on a URI::ParseSearchString object.
+This module works a little harder than its SuperClass to get you results. If
 it fails, it will return to you the results that L<URI::ParseSearchString>
 would have returned to you anyway, so it should function well as a drop-in
-replacement. 
+replacement.
 
-L<WWW::Mechanize> is used to extract search strings from some URLs 
+L<WWW::Mechanize> is used to extract search strings from some URLs
 which contain session info rather than search params.  Optionally,
 L<WWW::Mechanize::Cached> can be used to cache your lookups. There is additional
 parsing and also a guess() method which will return good results in many cases
@@ -438,19 +447,19 @@ of doubt.
 
 =head2 parse_search_string( $url )
 
-At this point, this is the only "extended" URI::ParseSearchString method.  
+At this point, this is the only "extended" URI::ParseSearchString method.
 This method performs the following bit of logic:
 
-1) If the URL supplied looks to be a search query with session info rather 
+1) If the URL supplied looks to be a search query with session info rather
 than search data in the URL, it will attempt to access the URL and extract the
-search terms from the page returned.  
+search terms from the page returned.
 
 2) If this returns no results, the URL will be processed by parse_more()
 
-3) If there are still no results, the results of URI::ParseSearchString::se_term 
+3) If there are still no results, the results of URI::ParseSearchString::se_term
 will be returned.
 
-WWW::Mechanize::Cached can be used to speed up your movement through large log 
+WWW::Mechanize::Cached can be used to speed up your movement through large log
 files which may contain multiple similar URLs:
 
   use URI::ParseSearchString::More;
@@ -458,9 +467,9 @@ files which may contain multiple similar URLs:
   $more->set_cached( 1 );
   my $search_terms = $more->se_term( $url );
 
-One interesting thing to note is that maps.google.* URLs have 2 important 
-params: "q" and "near".   The same can be said for local.google.*  I would 
-think the results would be incomplete without including the value of "near" in 
+One interesting thing to note is that maps.google.* URLs have 2 important
+params: "q" and "near".   The same can be said for local.google.*  I would
+think the results would be incomplete without including the value of "near" in
 the search terms for these searches.  So, expect the following results:
 
   my $url = ""http://local.google.ca/local?sc=1&hl=en&near=Stratford%20ON&btnG=Google%20Search&q=home%20health";
@@ -482,12 +491,12 @@ A convenience method which calls parse_search_string.
 
 =head2 blame
 
-Returns the name of the module that came up with the results on the last 
+Returns the name of the module that came up with the results on the last
 string parsed by parse_search_string().  Possible results:
 
   URI::ParseSearchString
   URI::ParseSearchString::More
-  
+
 =head2 set_cached( 0|1 )
 
 Turn caching off and on.  As of version 0.08 caching is OFF by default.  See
@@ -522,16 +531,16 @@ URI::ParseSearchString if it comes up empty.
 
 =head2 guess( $url )
 
-For the most part, the parsing that goes on is done with specific search 
-engines (ie. the ones that we already know about) in mind.  However, in a lot 
+For the most part, the parsing that goes on is done with specific search
+engines (ie. the ones that we already know about) in mind.  However, in a lot
 cases, a good guess is all that you need.  For example, a URI which contains
 a query string with the parameter "q" or "query" is generally the product of
 a search.  If se_term() or parse_more() has come up empty, guess may just
 provide you with a valid search term.  Then again, it may not.  Caveat emptor.
-  
+
 =head1 TO DO
 
-Here is a list of some of the engines currently not covered by 
+Here is a list of some of the engines currently not covered by
 L<URI::ParseSearchString> that may be added to this module:
 
   images.google.*
@@ -626,4 +635,3 @@ it and/or modify it under the same terms as Perl itself.
 
 1;
 # The preceding line will help the module return a true value
-

@@ -6,11 +6,12 @@ Makefile.PL
 examples/001_parse.pl
 lib/URI/ParseSearchString/More.pm
 t/001_load.t
-t/002_pod.t  
-t/003_coverage.t  
-t/004_critic.t  
+t/002_pod.t
+t/003_coverage.t
+t/004_critic.t
 t/005_parse_more.t
 t/006_extended.t
+t/007_focus.t
 t/urls.cfg
 t/extended_urls.cfg
 t/perlcriticrc
