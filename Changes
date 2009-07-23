@@ -6,6 +6,8 @@ Revision history for Perl module URI::ParseSearchString::More
 	- Added bing.com to engines
 	- Added fastbrowsersearch.com to engines
 	- Now requires Data::Dump rather than Data::Dumper
+	- Added answers.yahoo.com to engines
+	- Removed images.google.* from TODO list as this was already being parsed
 
 0.11 2009-07-09
     - Wrapped $mech->get in an eval in order to get by the following cryptic
