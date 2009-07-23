@@ -1,6 +1,5 @@
 Revision history for Perl module URI::ParseSearchString::More
 
-<<<<<<< HEAD:Changes
 0.12 2009-07-22
     - Now requires version 1.33 of WWW::Mechanize::Cached as this release
 	  fixes the CODE items error
@@ -10,10 +9,7 @@ Revision history for Perl module URI::ParseSearchString::More
 	- Added answers.yahoo.com to engines
 	- Removed images.google.* from TODO list as this was already being parsed
 
-0.11 2009-07-09
-=======
 0.11 2009-07-10
->>>>>>> 591c60f247d8727b9101f2fe3a635082993c63f4:Changes
     - Wrapped $mech->get in an eval in order to get by the following cryptic
       error message:
       Can't store CODE items at ../../lib/Storable.pm
