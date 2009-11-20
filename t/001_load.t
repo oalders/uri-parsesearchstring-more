@@ -34,6 +34,26 @@ ok( $host, "got host: $host");
 require_ok( 'Test::WWW::Mechanize' );
 my $mech = Test::WWW::Mechanize->new();
 
+$more->set_cached( 0 );
+ok ( !$more->get_cached, "is not caching");
+isa_ok( $more->get_mech, 'WWW::Mechanize' );
+ 
+$more->set_cached( 1 );
+ok ( $more->get_cached, "is caching");
+
+isa_ok( $more->get_mech, 'WWW::Mechanize' );
+isa_ok( $more->get_mech, 'WWW::Mechanize::Cached' );
+
+if ( exists $ENV{'TEST_UPM_CACHED'}
+    && $ENV{'TEST_UPM_CACHED'} ) {
+    $more->set_cached( 1 );
+    diag("caching is enabled...");
+}
+else {
+    $more->set_cached( 0 );
+    diag("caching is disabled");
+}
+
 my $query = "testing";
 
 my %urls = (
@@ -56,23 +76,16 @@ foreach my $engine ( keys %urls ) {
     
             $mech->get_ok( $url, "got search page ($url) from $engine" );
         
-            ok( $mech->title(), "got a title from $engine: " . $mech->title() );
+            ok( $mech->title(), "got a title from $engine: '" . $mech->title() .q{'} );
             my $search_term = $more->_apply_regex(
                 string  => $mech->title(),
-                regex   => $engine,
+                engine  => $engine,
             );
             
             cmp_ok( $search_term, 'eq', $query, "$engine returns correct search term" );
+            #print $mech->content;
         }
     }
 }
 
-$more->set_cached( 0 );
-ok ( !$more->get_cached, "is not caching");
-isa_ok( $more->get_mech, 'WWW::Mechanize' );
- 
-$more->set_cached( 1 );
-ok ( $more->get_cached, "is caching");
 
-isa_ok( $more->get_mech, 'WWW::Mechanize' );
-isa_ok( $more->get_mech, 'WWW::Mechanize::Cached' );

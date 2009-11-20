@@ -1,5 +1,8 @@
 Revision history for Perl module URI::ParseSearchString::More
 
+0.13 2009-11-20
+    - Fixed AOL parsing
+
 0.12 2009-07-22
     - Now requires version 1.33 of WWW::Mechanize::Cached as this release
 	  fixes the CODE items error
