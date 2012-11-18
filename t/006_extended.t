@@ -48,43 +48,49 @@ use lib '../lib';
 
 BEGIN { use_ok( 'URI::ParseSearchString::More' ); }
 
-my $more = URI::ParseSearchString::More->new ();
+my $more = URI::ParseSearchString::More->new();
 
- use Config::General;
- my $conf = new Config::General(
-    -ConfigFile => "t/extended_urls.cfg", 
+use Config::General;
+my $conf = new Config::General(
+    -ConfigFile      => "t/extended_urls.cfg",
     -BackslashEscape => 1,
 );
- my %config = $conf->getall;
- 
+my %config = $conf->getall;
+
 if ( exists $ENV{'TEST_UPM_CACHED'}
-    && $ENV{'TEST_UPM_CACHED'} ) {
+    && $ENV{'TEST_UPM_CACHED'} )
+{
     $more->set_cached( 1 );
-    diag("caching is enabled...");
+    diag( "caching is enabled..." );
 }
 
 my $skip = 1;
 if ( exists $ENV{'TEST_UPM_EXTENDED'}
-    && $ENV{'TEST_UPM_EXTENDED'} ) {
+    && $ENV{'TEST_UPM_EXTENDED'} )
+{
     $skip = 0;
-    diag("extended testing is enabled...");
+    diag( "extended testing is enabled..." );
 }
 
- 
-my $tests = scalar @{$config{'urls'}}; 
+my $tests = scalar @{ $config{'urls'} };
 
 SKIP: {
 
-    skip "See inline docs for info on how to enable these tests", $tests if $skip;
+    skip "See inline docs for info on how to enable these tests", $tests
+        if $skip;
 
-    foreach my $test ( @{$config{'urls'}}) {
+    foreach my $test ( @{ $config{'urls'} } ) {
         next unless $test->{'terms'};
-     
+
         my $terms = $more->parse_search_string( $test->{'url'} );
 
-        cmp_ok ( $terms, 'eq', $test->{'terms'}, "got $terms");
-        cmp_ok( $more->blame(), 'eq', 'URI::ParseSearchString::More', "parsed by More" );
+        cmp_ok( $terms, 'eq', $test->{'terms'}, "got $terms" );
+        cmp_ok(
+            $more->blame(), 'eq',
+            'URI::ParseSearchString::More',
+            "parsed by More"
+        );
 
     }
- 
+
 }

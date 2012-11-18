@@ -1,5 +1,8 @@
 Revision history for Perl module URI::ParseSearchString::More
 
+0.14 2012-11-17
+    - Removed as.weatherstudio.com. Domain no longer active.
+
 0.13 2009-11-20
     - Fixed AOL parsing
 

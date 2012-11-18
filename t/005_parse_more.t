@@ -29,32 +29,40 @@ use lib '../lib';
 
 BEGIN { use_ok( 'URI::ParseSearchString::More' ); }
 
-my $more = URI::ParseSearchString::More->new ();
+my $more = URI::ParseSearchString::More->new();
 
- use Config::General;
- my $conf = new Config::General(
-    -ConfigFile => "t/urls.cfg",
+use Config::General;
+my $conf = new Config::General(
+    -ConfigFile      => "t/urls.cfg",
     -BackslashEscape => 1,
 );
- my %config = $conf->getall;
+my %config = $conf->getall;
 
- if ( exists $ENV{'TEST_UPM_CACHED'}
-    && $ENV{'TEST_UPM_CACHED'} ) {
+if ( exists $ENV{'TEST_UPM_CACHED'}
+    && $ENV{'TEST_UPM_CACHED'} )
+{
     $more->set_cached( 1 );
-    diag("caching is enabled...");
- }
+    diag( "caching is enabled..." );
+}
 
- foreach my $test ( @{$config{'urls'}}) {
-     next unless $test->{'terms'};
+foreach my $test ( @{ $config{'urls'} } ) {
+    next unless $test->{'terms'};
 
-     my $terms = $more->parse_search_string( $test->{'url'} );
+    my $terms = $more->parse_search_string( $test->{'url'} );
 
-     if ( $more->get_mech && $more->get_mech->status && $more->get_mech->status == 403 ) {
+    if (   $more->get_mech
+        && $more->get_mech->status
+        && $more->get_mech->status == 403 )
+    {
         diag( "You may be getting blocked by $test->{'url'}" );
-        exit(0);
-     }
+        exit( 0 );
+    }
 
-     cmp_ok ( $terms, 'eq', $test->{'terms'}, "got $terms");
-     cmp_ok( $more->blame(), 'eq', 'URI::ParseSearchString::More', "parsed by More" );
+    cmp_ok( $terms, 'eq', $test->{'terms'}, "got $terms" );
+    cmp_ok(
+        $more->blame(), 'eq',
+        'URI::ParseSearchString::More',
+        "parsed by More"
+    );
 
- }
+}
