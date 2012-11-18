@@ -5,7 +5,8 @@ use warnings;
 
 # t/001_load.t - check module loading and create testing directory
 
-use Test::More tests => 23;
+use Test::More;
+bail_on_fail;
 use lib '../lib';
 
 BEGIN { use_ok( 'URI::ParseSearchString::More' ); }
@@ -60,7 +61,6 @@ my %urls = (
     aol => [ "http://search.aol.com/aol/search?s_it=topsearchbox.nrf&q=$query" ],
     as  => [ 
         "http://as.starware.com/dp/search?src_id=&client_id=&product=&serv=web&version=&it=-1&step=1&subproduct=site&qry=$query&z=Find+It", 
-        "http://as.weatherstudio.com/dp/search?src_id=&client_id=&product=&serv=web&version=&it=-1&step=1&subproduct=site&qry=$query&z=Find+It",
     ],
 );
 
@@ -88,4 +88,4 @@ foreach my $engine ( keys %urls ) {
     }
 }
 
-
+done_testing();

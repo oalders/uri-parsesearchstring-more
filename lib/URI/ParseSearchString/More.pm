@@ -5,7 +5,7 @@ use strict;
 
 use base qw( URI::ParseSearchString );
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 use CGI;
 use Data::Dump qw( dump );
@@ -17,7 +17,7 @@ use WWW::Mechanize::Cached;
 my %search_regex = (
     answers => [qr{(.*) - Yahoo! Answers}],
     aol     => [qr{(.*) - AOL Search Results}],
-    as      => [qr{(?:WeatherStudio|Starware) (.*) Search Results}],
+    as      => [qr{Starware (.*) Search Results}],
     dogpile => [qr{(.*) - Dogpile Web Search}],
 );
 
@@ -475,7 +475,6 @@ Engines with session info currently supported:
 
   aol.com
   http://as.starware.com/dp/search
-  http://as.weatherstudio.com/dp/search
 
 =head2 se_term( $url )
 
