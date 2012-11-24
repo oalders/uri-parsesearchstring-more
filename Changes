@@ -1,5 +1,8 @@
 Revision history for Perl module URI::ParseSearchString::More
 
+0.16 2012-11-24
+    - Cleans up test suite to reduce deps.
+
 0.15 2012-11-18
     - Converts dist to Dist::Zilla.
 
