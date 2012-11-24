@@ -23,7 +23,6 @@ export TEST_UPM_CACHED=1
 =cut
 
 use Test::More qw( no_plan );
-use Data::Dumper;
 
 use lib '../lib';
 

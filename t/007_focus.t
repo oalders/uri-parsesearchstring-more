@@ -3,8 +3,6 @@
 use strict;
 use warnings;
 
-use Data::Dump qw( dump );
-
 # t/007_focus.t - focus on some troublesome URLs
 
 use Test::More tests => 4;
@@ -17,8 +15,6 @@ isa_ok( $more, 'URI::ParseSearchString::More' );
 
 my @engines = $more->_get_engines;
 ok( @engines, "got a list of engines" );
-
-#diag( dump \@engines );
 
 my $terms
     = $more->parse_search_string(
