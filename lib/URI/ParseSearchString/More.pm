@@ -128,7 +128,6 @@ my %query_lookup = (
     'shopping.yahoo.com'         => ['p'],
     'start.shaw.ca'              => ['q'],
     'startgoogle.startpagina.nl' => ['q'],
-    'starware.com'               => ['qry'],
     'stumbleupon.com'            => ['url'],
     'sucheaol.aol.de'            => ['q'],
     'teoma.com'                  => ['q'],
@@ -461,7 +460,6 @@ the search terms for these searches.  So, expect the following results:
 Engines with session info currently supported:
 
   aol.com
-  http://as.starware.com/dp/search
 
 =head2 se_term( $url )
 

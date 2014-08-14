@@ -65,9 +65,6 @@ my $query = "testing";
 my %urls = (
     aol =>
         ["http://search.aol.com/aol/search?s_it=topsearchbox.nrf&q=$query"],
-    as => [
-        "http://as.starware.com/dp/search?src_id=&client_id=&product=&serv=web&version=&it=-1&step=1&subproduct=site&qry=$query&z=Find+It",
-    ],
 );
 
 foreach my $engine ( keys %urls ) {
