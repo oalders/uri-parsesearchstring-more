@@ -12,7 +12,7 @@ use URI::Heuristic qw(uf_uristr);
 use WWW::Mechanize::Cached;
 
 my %search_regex = (
-    answers => [qr{(.*) - Yahoo! Answers}],
+    answers => [qr{(.*)}],
     aol     => [qr{(.*) - AOL Search Results}],
     as      => [qr{Starware (.*) Search Results}],
     dogpile => [qr{(.*) - Dogpile Web Search}],
