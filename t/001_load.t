@@ -62,10 +62,10 @@ else {
 
 my $query = "testing";
 
-my %urls = (
-    aol =>
+my %urls
+    = ( aol =>
         ["http://search.aol.com/aol/search?s_it=topsearchbox.nrf&q=$query"],
-);
+    );
 
 foreach my $engine ( keys %urls ) {
 

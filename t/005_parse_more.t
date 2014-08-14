@@ -56,11 +56,7 @@ foreach my $test ( @{ $config{'urls'} } ) {
     }
 
     is( $terms, $test->{'terms'}, "got $terms" );
-    is(
-        $more->blame(),
-        'URI::ParseSearchString::More',
-        'parsed by More'
-    );
+    is( $more->blame(), 'URI::ParseSearchString::More', 'parsed by More' );
 
 }
 

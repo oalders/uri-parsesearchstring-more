@@ -149,7 +149,6 @@ my %query_lookup = (
 );
 
 sub parse_search_string {
-
     my $self = shift;
     my $url  = shift;
 
@@ -196,18 +195,14 @@ sub parse_search_string {
     # We've come up empty.  Let's see what the superclass can do
     $self->{'more'}->{'blame'} = 'URI::ParseSearchString';
     return $self->SUPER::parse_search_string( $url, @_ );
-
 }
 
 sub se_term {
-
     my $self = shift;
     return $self->parse_search_string( @_ );
-
 }
 
 sub parse_more {
-
     my $self = shift;
     my $url  = shift;
 
@@ -271,18 +266,14 @@ sub parse_more {
     }
 
     return;
-
 }
 
 sub blame {
-
     my $self = shift;
     return $self->{more}->{blame};
-
 }
 
 sub guess {
-
     my $self = shift;
     my $url = shift || $self->{'more'}->{'string'};
 
@@ -305,7 +296,6 @@ sub guess {
 }
 
 sub set_cached {
-
     my $self   = shift;
     my $switch = shift;
 
@@ -317,19 +307,15 @@ sub set_cached {
     }
 
     return $self->{'__more_cached'};
-
 }
 
 sub get_cached {
-
     my $self = shift;
 
     return $self->{'__more_cached'};
-
 }
 
 sub get_mech {
-
     my $self  = shift;
     my $cache = $self->get_cached;
 
@@ -357,11 +343,9 @@ sub get_mech {
     }
 
     return $self->{'__more_mech'};
-
 }
 
 sub _apply_regex {
-
     my $self  = shift;
     my %rules = (
         string => { type => SCALAR },
@@ -375,12 +359,10 @@ sub _apply_regex {
             return $1;
         }
     }
-
     return;
 }
 
 sub _get_engines {
-
     my $lc = List::Compare->new( \@engines, [ keys %query_lookup ] );
     my @remaining_engines = $lc->get_complement;
 
@@ -388,8 +370,9 @@ sub _get_engines {
     push @all_engines, @remaining_engines;
 
     return @all_engines;
-
 }
+
+=pod
 
 =head1 SYNOPSIS
 
