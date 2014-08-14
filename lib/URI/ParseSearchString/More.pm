@@ -419,7 +419,7 @@ Repository: L<http://github.com/oalders/uri-parsesearchstring-more/tree/master>
 =head1 USAGE
 
   use URI::ParseSearchString::More;
-  my $more = URI::ParseSearchString::More;
+  my $more = URI::ParseSearchString::More->new;
   my $search_terms = $more->se_term( $url );
 
 
@@ -443,7 +443,7 @@ WWW::Mechanize::Cached can be used to speed up your movement through large log
 files which may contain multiple similar URLs:
 
   use URI::ParseSearchString::More;
-  my $more = URI::ParseSearchString::More;
+  my $more = URI::ParseSearchString::More->new;
   $more->set_cached( 1 );
   my $search_terms = $more->se_term( $url );
 
