@@ -5,11 +5,13 @@ package URI::ParseSearchString::More;
 
 use base qw( URI::ParseSearchString );
 
-use CGI;
-use List::Compare;
+use List::Compare ();
 use Params::Validate qw( validate SCALAR );
+use Try::Tiny;
+use URI;
 use URI::Heuristic qw(uf_uristr);
-use WWW::Mechanize::Cached;
+use URI::QueryParam        ();
+use WWW::Mechanize::Cached ();
 
 my %search_regex = (
     answers => [qr{(.*)}],
@@ -160,12 +162,12 @@ sub parse_search_string {
             $url = uf_uristr( $url );
 
             my $mech = $self->get_mech();
-            eval { $mech->get( $url ); };
 
-            if ( $@ ) {
+            try { $mech->get( $url ); }
+            catch {
                 warn "Issue with url: $url";
-                warn $@;
-            }
+                warn $_;
+            };
 
             if ( $mech->status && $mech->status == 403 ) {
                 warn "403 returned for $url  Are you being blocked?";
@@ -224,14 +226,14 @@ sub parse_more {
         $query_string =~ s{&quot;}{"}gxms;
         $query_string =~ s{&\#39;}{'}gxms;
 
-        my $cgi = new CGI( $query_string );
-
         # remove trailing slash
         $domain =~ s{/\z}{};
 
         my @param_parts = ();
         my %params      = ();
         my @engines     = $self->_get_engines;
+
+        my $uri = URI->new( $url );
 
     ENGINE:
         foreach my $engine ( @engines ) {
@@ -244,8 +246,8 @@ sub parse_more {
                 $self->{'more'}->{'names'}  = \@names;
 
                 foreach my $name ( @names ) {
-                    push @param_parts, $cgi->param( $name );
-                    $params{$name} = $cgi->param( $name );
+                    push @param_parts, $uri->query_param( $name );
+                    $params{$name} = $uri->query_param( $name );
                 }
 
                 last ENGINE;
@@ -279,15 +281,12 @@ sub guess {
 
     my @guesses = ( 'q', 'query', 'searchfor' );
 
-    if ( $url =~ m{ ( .* ?/ ) .* ?\? (.*)\z }xms ) {
-
-        my $domain       = $1;
-        my $query_string = $2;
-        my $cgi          = new CGI( $query_string );
+    my $uri = URI->new( $url );
+    if ( $uri->query_params ) {
 
         foreach my $guess ( @guesses ) {
-            if ( $cgi->param( $guess ) ) {
-                return $cgi->param( $guess );
+            if ( $uri->query_param( $guess ) ) {
+                return $uri->query_param( $guess );
             }
         }
     }
