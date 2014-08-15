@@ -41,11 +41,9 @@ export TEST_UPM_CACHED=1
 
 =cut
 
-use Test::More qw( no_plan );
+use Test::Most;
 
-use lib '../lib';
-
-BEGIN { use_ok( 'URI::ParseSearchString::More' ); }
+use URI::ParseSearchString::More;
 
 my $more = URI::ParseSearchString::More->new();
 
@@ -93,3 +91,5 @@ SKIP: {
     }
 
 }
+
+done_testing();

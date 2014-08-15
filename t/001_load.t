@@ -5,10 +5,9 @@ use warnings;
 
 # t/001_load.t - check module loading and create testing directory
 
-use Test::More;
-use lib '../lib';
+use Test::Most;
 
-BEGIN { use_ok( 'URI::ParseSearchString::More' ); }
+use URI::ParseSearchString::More;
 
 my $more = URI::ParseSearchString::More->new();
 isa_ok( $more, 'URI::ParseSearchString::More' );

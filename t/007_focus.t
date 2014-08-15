@@ -5,10 +5,9 @@ use warnings;
 
 # t/007_focus.t - focus on some troublesome URLs
 
-use Test::More tests => 4;
-use lib '../lib';
+use Test::Most;
 
-require_ok( 'URI::ParseSearchString::More' );
+use URI::ParseSearchString::More;
 
 my $more = URI::ParseSearchString::More->new();
 isa_ok( $more, 'URI::ParseSearchString::More' );
@@ -26,3 +25,5 @@ cmp_ok(
     "how to get a headline on myspace2.0",
     "got correct terms for fastbrowsersearch"
 );
+
+done_testing();
