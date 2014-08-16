@@ -18,6 +18,7 @@ on 'build' => sub {
 on 'test' => sub {
   requires "Config::General" => "0";
   requires "Test::Most" => "0";
+  requires "Test::RequiresInternet" => "0";
 };
 
 on 'configure' => sub {
