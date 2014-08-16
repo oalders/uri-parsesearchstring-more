@@ -23,6 +23,7 @@ export TEST_UPM_CACHED=1
 =cut
 
 use Test::Most;
+use Test::RequiresInternet;
 
 use URI::ParseSearchString::More;
 
