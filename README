@@ -3,7 +3,7 @@ NAME
     referrers.
 
 VERSION
-    version 0.16
+    version 0.17
 
 SYNOPSIS
       use URI::ParseSearchString::More;
@@ -29,7 +29,7 @@ DESCRIPTION
 
 USAGE
       use URI::ParseSearchString::More;
-      my $more = URI::ParseSearchString::More;
+      my $more = URI::ParseSearchString::More->new;
       my $search_terms = $more->se_term( $url );
 
 URI::ParseSearchString
@@ -50,7 +50,7 @@ URI::ParseSearchString
     large log files which may contain multiple similar URLs:
 
       use URI::ParseSearchString::More;
-      my $more = URI::ParseSearchString::More;
+      my $more = URI::ParseSearchString::More->new;
       $more->set_cached( 1 );
       my $search_terms = $more->se_term( $url );
 
@@ -68,7 +68,6 @@ URI::ParseSearchString
     Engines with session info currently supported:
 
       aol.com
-      http://as.starware.com/dp/search
 
   se_term( $url )
     A convenience method which calls parse_search_string.
