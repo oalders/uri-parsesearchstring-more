@@ -1,5 +1,7 @@
 Revision history for Perl module URI::ParseSearchString::More
 
+{{$NEXT}}
+
 0.18      2018-08-03 22:58:54Z
     - Require LWP::Protocol::https (Reported by Slaven Rezic GH#1)
     - Fix failing Yahoo test (Reported by Slaven Rezic GH#2)
