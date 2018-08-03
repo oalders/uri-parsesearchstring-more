@@ -219,15 +219,14 @@ sub parse_more {
 
     if ( $url =~ m{ ( (?: $regex ) .* ?/ ) .* ?\? (.*)\z }xms ) {
 
-        my $domain = $1;
+        my $uri    = URI->new( uf_uristr($url) );
+        my $domain = $uri->host;
 
         # remove trailing slash
         $domain =~ s{/\z}{};
 
         my @param_parts = ();
         my %params      = ();
-
-        my $uri = URI->new($url);
 
     ENGINE:
         foreach my $engine ( $self->_get_engines ) {
