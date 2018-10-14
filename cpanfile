@@ -18,6 +18,7 @@ on 'test' => sub {
   requires "File::Spec" => "0";
   requires "Test::More" => "0";
   requires "Test::Most" => "0";
+  requires "Test::Fatal" => "0";
   requires "Test::RequiresInternet" => "0";
   requires "Test::WWW::Mechanize" => "0";
   requires "perl" => "5.010";
