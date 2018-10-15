@@ -36,6 +36,7 @@ my %WriteMakefileArgs = (
     "File::Spec" => 0,
     "Test::More" => 0,
     "Test::Most" => 0,
+    "Test::Fatal" => 0,
     "Test::RequiresInternet" => 0,
     "Test::WWW::Mechanize" => 0
   },

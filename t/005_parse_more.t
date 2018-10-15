@@ -21,6 +21,7 @@ export TEST_UPM_CACHED=1
 =cut
 
 use Test::Most;
+use Test::Fatal;
 use Test::RequiresInternet;
 use URI::ParseSearchString::More ();
 
@@ -38,6 +39,12 @@ if ( exists $ENV{'TEST_UPM_CACHED'}
     $more->set_cached(1);
     diag('caching is enabled...');
 }
+
+like(
+  exception { $more->parse_search_string;  },
+  qr/missing url/,
+  'dies on missing URL',
+);
 
 foreach my $test ( @{ $config{'urls'} } ) {
     next unless $test->{'terms'};

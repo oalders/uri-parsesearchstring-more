@@ -154,6 +154,8 @@ sub parse_search_string {
     my $self = shift;
     my $url  = shift;
 
+    die 'missing url.' unless $url;
+
     foreach my $engine ( keys %url_regex ) {
 
         if ( $url =~ $url_regex{$engine} ) {
