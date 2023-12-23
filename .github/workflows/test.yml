@@ -83,6 +83,7 @@ jobs:
         with:
           cpanfile: 'cpanfile'
           args: '--with-suggests --with-recommends --with-test'
+          sudo: false
       - run: prove -lr t
         env:
           AUTHOR_TESTING: 0
@@ -126,6 +127,7 @@ jobs:
         with:
           cpanfile: 'cpanfile'
           args: '--with-suggests --with-recommends --with-test'
+          sudo: false
       - run: prove -lr t
         env:
           AUTHOR_TESTING: 0
