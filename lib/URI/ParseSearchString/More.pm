@@ -2,7 +2,7 @@ use warnings;
 use strict;
 
 package URI::ParseSearchString::More;
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 use base qw( URI::ParseSearchString );
 
 use List::Compare          ();
