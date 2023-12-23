@@ -41,9 +41,9 @@ if ( exists $ENV{'TEST_UPM_CACHED'}
 }
 
 like(
-  exception { $more->parse_search_string;  },
-  qr/missing url/,
-  'dies on missing URL',
+    exception { $more->parse_search_string; },
+    qr/missing url/,
+    'dies on missing URL',
 );
 
 foreach my $test ( @{ $config{'urls'} } ) {
@@ -58,7 +58,7 @@ foreach my $test ( @{ $config{'urls'} } ) {
         exit(0);
     }
 
-    is( $terms, $test->{'terms'}, "got $terms" );
+    is( $terms,         $test->{'terms'},               "got $terms" );
     is( $more->blame(), 'URI::ParseSearchString::More', 'parsed by More' );
 
 }

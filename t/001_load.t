@@ -7,7 +7,7 @@ use warnings;
 
 use Test::Most;
 use Test::RequiresInternet ( 'search.aol.com' => 443 );
-use Test::WWW::Mechanize ();
+use Test::WWW::Mechanize         ();
 use URI::ParseSearchString::More ();
 
 my $more = URI::ParseSearchString::More->new();
