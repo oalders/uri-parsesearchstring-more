@@ -6,11 +6,10 @@ our $VERSION = '0.19';
 use base qw( URI::ParseSearchString );
 
 use List::Compare          ();
-use LWP::Protocol::https   ();
-use Params::Validate       qw( validate SCALAR );
+use Params::Validate       qw( SCALAR validate );
 use Try::Tiny              qw( catch try );
 use URI                    ();
-use URI::Heuristic         qw(uf_uristr);
+use URI::Heuristic         qw( uf_uristr );
 use URI::QueryParam        ();
 use WWW::Mechanize::Cached ();
 

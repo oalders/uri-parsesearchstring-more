@@ -20,14 +20,14 @@ export TEST_UPM_CACHED=1
 
 =cut
 
-use Test::Most;
-use Test::Fatal;
+use Test::Most import => [qw( diag done_testing is like )];
+use Test::Fatal qw( exception );
 use Test::RequiresInternet;
 use URI::ParseSearchString::More ();
 
 my $more = URI::ParseSearchString::More->new();
 
-use Config::General;
+use Config::General ();
 my $conf = Config::General->new(
     -ConfigFile      => 't/urls.cfg',
     -BackslashEscape => 1,
