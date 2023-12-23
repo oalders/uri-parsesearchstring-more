@@ -81,7 +81,7 @@ jobs:
         uses: perl-actions/install-with-cpm@stable
         with:
           cpanfile: 'cpanfile'
-          args: '--with-suggests --with-recommends --with-test'
+          args: '--with-test'
           sudo: false
       - run: prove -lr t
         env:
@@ -124,7 +124,7 @@ jobs:
         uses: perl-actions/install-with-cpm@stable
         with:
           cpanfile: 'cpanfile'
-          args: '--with-suggests --with-recommends --with-test'
+          args: '--with-test'
           sudo: false
       - run: prove -lr t
         env:
@@ -162,7 +162,7 @@ jobs:
         uses: perl-actions/install-with-cpm@stable
         with:
           cpanfile: 'cpanfile'
-          args: '--with-suggests --with-recommends --with-test'
+          args: '--with-test'
       - run: prove -lr t
         env:
           AUTHOR_TESTING: 0
