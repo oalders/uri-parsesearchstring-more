@@ -6,6 +6,7 @@ our $VERSION = '0.19';
 use base qw( URI::ParseSearchString );
 
 use List::Compare          ();
+use LWP::Protocol::https   ();                      ## no perlimports
 use Params::Validate       qw( SCALAR validate );
 use Try::Tiny              qw( catch try );
 use URI                    ();
