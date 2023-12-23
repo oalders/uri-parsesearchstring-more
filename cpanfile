@@ -11,7 +11,7 @@ requires "URI::ParseSearchString" => "0";
 requires "URI::QueryParam" => "0";
 requires "WWW::Mechanize::Cached" => "0";
 requires "base" => "0";
-requires "perl" => "5.010";
+requires "perl" => "5.021008";
 requires "strict" => "0";
 requires "warnings" => "0";
 
@@ -24,7 +24,7 @@ on 'test' => sub {
   requires "Test::Most" => "0";
   requires "Test::RequiresInternet" => "0";
   requires "Test::WWW::Mechanize" => "0";
-  requires "perl" => "5.010";
+  requires "perl" => "5.021008";
 };
 
 on 'test' => sub {

@@ -1,6 +1,6 @@
 Revision history for Perl module URI::ParseSearchString::More
 
-{{$NEXT}}
+0.19      2023-12-23 23:55:32Z
     - Use URI::host() rather than a regex to get a host name
     - Remove failing test (GH#5) (Olaf Alders) (Reported by Slaven Rezić GH#4)
 
